@@ -1,0 +1,45 @@
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  batch:
+    job:
+      enabled: false
+  datasource:
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+    password: example
+    url: jdbc:postgresql://0.0.0.0:5432/postgres
+    username: postgres
+  devtools:
+    add-properties: true
+    livereload:
+      enabled: true
+    restart:
+      exclude: static/**,public/**
+  flyway:
+    createSchemas: true
+    group: true
+    table: flyway_schema_history
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    show-sql: true
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: info,health,flyway
+    server:
+      port: 9095
