@@ -1,127 +1,87 @@
 package com.heathcare.lab.hapistarter.providers;
 
+import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
+import com.heathcare.lab.hapistarter.dao.IPatient;
+import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.OperationOutcome;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-import com.heathcare.lab.hapistarter.entity.PatientEntity;
-import com.heathcare.lab.hapistarter.entity.PersonNameEntity;
-import com.heathcare.lab.hapistarter.repositories.PatientRepo;
-import lombok.AllArgsConstructor;
-import org.hl7.fhir.r4.model.*;
-import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
-import org.hl7.fhir.r4.model.Identifier.IdentifierUse;
-import org.jvnet.hk2.annotations.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-
-@Service
+@Component
 public class PatientResourceProvider implements IResourceProvider {
 
   @Autowired
-  private PatientRepo patientRepo;
+  private FhirContext ctx;
 
-  /**
-   * The getResourceType method comes from IResourceProvider, and must
-   * be overridden to indicate what type of resource this provider
-   * supplies.
-   */
+  @Autowired
+  private IPatient patientDao;
+
+  private static final Logger log = LoggerFactory.getLogger(PatientResourceProvider.class);
+
   @Override
-  public Class<Patient> getResourceType() {
+  public Class<? extends IBaseResource> getResourceType() {
     return Patient.class;
   }
 
-  /**
-   * The "@Read" annotation indicates that this method supports the
-   * read operation. Read operations should return a single resource
-   * instance.
-   *
-   * @param theId
-   *    The read operation takes one parameter, which must be of type
-   *    IdType and must be annotated with the "@Read.IdParam" annotation.
-   * @return
-   *    Returns a resource matching this identifier, or null if none exists.
-   */
+  @Create()
+  public MethodOutcome createPatient(HttpServletRequest theRequest, @ResourceParam Patient patient) {
+    log.debug("Create Patient Provider called");
+
+    MethodOutcome method = new MethodOutcome();
+    method.setCreated(true);
+    OperationOutcome opOutcome = new OperationOutcome();
+
+    method.setOperationOutcome(opOutcome);
+
+    try {
+      Patient myPatient = patientDao.create(ctx, patient);
+      log.info(myPatient.getIdElement().toString());
+      method.setId(myPatient.getIdElement());
+      method.setResource(myPatient);
+    } catch (Exception ex) {
+      log.error(ex.getMessage());
+    }
+
+    log.debug("called create Patient method");
+
+    return method;
+  }
+
+
   @Read
-  public Patient getResourceById(@IdParam IdType theId) {
-
-    if (patientRepo.findByPatientId(theId.getId()).isPresent()) {
-      return null;
-    }
-
-    var pa = patientRepo.findByPatientId(theId.getId()).get();
-
-    var patient = new Patient();
-    patient.addIdentifier().setId(theId.getId());
-    patient.getIdentifier().get(0).setSystem("urn:hapitest:mrns");
-    patient.getIdentifier().get(0).setValue("00002");
-    patient.addName().setFamily(pa.getPatientName().getLastName());
-    patient.getName().get(0).setUse(HumanName.NameUse.OFFICIAL);
-    patient.getName().get(0).setText(pa.getPatientName().getFullName());
-    patient.getName().get(0).addGiven(pa.getPatientName().getFirstName());
-    if (pa.getPatientSex().equals("MALE")) {
-      patient.setGender(AdministrativeGender.MALE);
-    } else {
-      patient.setGender(AdministrativeGender.FEMALE);
-    }
-    patient.setBirthDate(pa.getPatientBirthDate());
+  public Patient readPatient(HttpServletRequest request, @IdParam IdType internalId) {
+    Patient patient = patientDao.read(ctx, internalId);
     return patient;
   }
 
-  /**
-   * The "@Create" annotation indicates that this method implements "create=type", which adds a
-   * new instance of a resource to the server.
-   */
-  @Create
-  public MethodOutcome createPatient(@ResourceParam Patient thePatient) {
-    var pat = PatientEntity.builder()
-            .patientSex(thePatient.getGender().toCode())
-            .patientName(PersonNameEntity.builder()
-                    .firstName(thePatient.getName().get(0).getGivenAsSingleString())
-                    .lastName(thePatient.getName().get(0).getFamily())
-                    .build())
-            .patientBirthDate(thePatient.getBirthDate())
-            .build();
-    var result = patientRepo.save(pat);
-    return new MethodOutcome(new IdType(pat.getPatientId()), true);
+  @Search
+  public List<Resource> searchByDob(HttpServletRequest request, @OptionalParam(name= Patient.SP_BIRTHDATE) DateParam birthDate) {
+    List<Resource> results = patientDao.searchByDob(ctx,birthDate);
+    return results;
   }
 
-
-  /**
-   * The "@Search" annotation indicates that this method supports the
-   * search operation. You may have many different methods annotated with
-   * this annotation, to support many different search criteria. This
-   * example searches by family name.
-   *
-   * @param theFamilyName
-   *    This operation takes one parameter which is the search criteria. It is
-   *    annotated with the "@Required" annotation. This annotation takes one argument,
-   *    a string containing the name of the search criteria. The datatype here
-   *    is StringParam, but there are other possible parameter types depending on the
-   *    specific search criteria.
-   * @return
-   *    This method returns a list of Patients. This list may contain multiple
-   *    matching resources, or it may also be empty.
-   */
   @Search
-  public List<Patient> getPatient(
-    @RequiredParam(name = Patient.SP_FAMILY) StringParam theFamilyName
-  ) {
-    var patient = new Patient();
-    patient.addIdentifier();
-    patient.getIdentifier().get(0).setUse(IdentifierUse.OFFICIAL);
-    patient.getIdentifier().get(0).setSystem("urn:hapitest:mrns");
-    patient.getIdentifier().get(0).setValue("00001");
-    patient.addName();
-    patient.getName().get(0).setFamily(theFamilyName.getValue());
-    patient.getName().get(0).addGiven("PatientOne");
-    patient.setGender(AdministrativeGender.MALE);
-    return Collections.singletonList(patient);
+  public List<Resource> searchByFamilyName(HttpServletRequest request, @RequiredParam(name = Patient.SP_FAMILY) StringParam familyName) {
+    List<Resource> results = patientDao.searchByFamilyName(ctx, familyName.getValue());
+    return results;
+  }
+
+  @Search
+  public List<Resource> searchByGivenName(HttpServletRequest request, @RequiredParam(name = Patient.SP_GIVEN) StringParam givenName) {
+    List<Resource> results = patientDao.searchByGivenName(ctx, givenName.getValue());
+    return results;
   }
 }

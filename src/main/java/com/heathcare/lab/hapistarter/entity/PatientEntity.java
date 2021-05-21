@@ -1,62 +1,121 @@
 package com.heathcare.lab.hapistarter.entity;
 
-import lombok.Builder;
-import lombok.Data;
+import org.hl7.fhir.r4.model.Enumerations;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashSet;
 
 @Entity
-@Table(name = "healthcare_patients")
-@Data @Builder
+@Table(name = "patient")
 public class PatientEntity {
+
     @Id
-    @GeneratedValue
-    long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-    @Column(name = "fhir_id")
-    String patientId;
+    private Date dateOfBirth;
+    private Enumerations.AdministrativeGender gender;
 
-    @Version
-    @Column(name = "version")
-    long version;
+    @OneToMany(mappedBy = "patientEntity", cascade = CascadeType.ALL)
+    private Collection<Name> names = new LinkedHashSet<>();
 
-    @Basic(optional = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_time", updatable = false)
-    Date createdTime;
+    @OneToMany(mappedBy = "patientEntity", cascade = CascadeType.ALL)
+    private Collection<Identifier> identifiers = new LinkedHashSet<>();
 
-    @Basic(optional = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_time")
-    Date updatedTime;
+    @OneToMany(mappedBy = "patientEntity", cascade = CascadeType.ALL)
+    private Collection<Address> addresses = new LinkedHashSet<>();
 
-    @Basic(optional = false)
-    @Column(name = "failed_verifications")
-    int failedVerifications;
+    @OneToMany(mappedBy = "patientEntity", cascade = CascadeType.ALL)
+    private Collection<Telecom> telecoms = new LinkedHashSet<>();
 
-    @Basic(optional = false)
-    @Temporal(TemporalType.DATE)
-    @Column(name = "pat_birthdate")
-    Date patientBirthDate;
-
-    @Basic(optional = false)
-    @Column(name = "pat_sex")
-    String patientSex;
-
-    @Embedded
-    PersonNameEntity patientName;
-
-    @PrePersist
-    public void onPrePersist() {
-        Date now = new Date();
-        createdTime = now;
-        updatedTime = now;
-        patientId = String.join("/", "Patient", Long.toString(id));
+    public PatientEntity() {
     }
 
-    @PreUpdate
-    public void onPreUpdate() {
-        updatedTime = new Date();
+    public PatientEntity(Date dateOfBirth, Enumerations.AdministrativeGender gender, Collection<Name> names, Collection<Identifier> identifiers, Collection<Address> addresses, Collection<Telecom> telecoms) {
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.names = names;
+        this.identifiers = identifiers;
+        this.addresses = addresses;
+        this.telecoms = telecoms;
     }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public Enumerations.AdministrativeGender getGender() {
+        return gender;
+    }
+
+    public void setGender(Enumerations.AdministrativeGender gender) {
+        this.gender = gender;
+    }
+
+    public Collection<Name> getNames() {
+        return names;
+    }
+
+    public void setNames(Collection<Name> names) {
+        this.names = names;
+    }
+
+    public Collection<Identifier> getIdentifiers() {
+        return identifiers;
+    }
+
+    public void setIdentifiers(Collection<Identifier> identifiers) {
+        this.identifiers = identifiers;
+    }
+
+    public Collection<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(Collection<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    public Collection<Telecom> getTelecoms() {
+        return telecoms;
+    }
+
+    public void setTelecoms(Collection<Telecom> telecoms) {
+        this.telecoms = telecoms;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void addToName(Name name) {
+        name.setPatientEntity(this);
+        this.names.add(name);
+    }
+
+    public void addToAddress(Address address) {
+        address.setPatientEntity(this);
+        this.addresses.add(address);
+    }
+
+    public void addToTelecom(Telecom telecom) {
+        telecom.setPatientEntity(this);
+        this.telecoms.add(telecom);
+    }
+
+    public void addToIdentifer(Identifier identifier) {
+        identifier.setPatientEntity(this);
+        this.identifiers.add(identifier);
+    }
+
 }
