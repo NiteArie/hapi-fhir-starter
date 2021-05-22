@@ -1,9 +1,17 @@
 package com.heathcare.lab.hapistarter.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "name")
+@Setter @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Name {
 
     @Id
@@ -12,57 +20,9 @@ public class Name {
     private String familyName;
     private String givenName;
     private String prefix;
+    private String use;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private PatientEntity patientEntity;
 
-    public Name() {
-
-    }
-
-    public Name(String familyName, String givenName, String prefix) {
-        this.familyName = familyName;
-        this.givenName = givenName;
-        this.prefix = prefix;
-    }
-
-    public PatientEntity getPatientEntity() {
-        return patientEntity;
-    }
-
-    public void setPatientEntity(PatientEntity patientEntity) {
-        this.patientEntity = patientEntity;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFamilyName() {
-        return familyName;
-    }
-
-    public void setFamilyName(String familyName) {
-        this.familyName = familyName;
-    }
-
-    public String getGivenName() {
-        return givenName;
-    }
-
-    public void setGivenName(String givenName) {
-        this.givenName = givenName;
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
 }

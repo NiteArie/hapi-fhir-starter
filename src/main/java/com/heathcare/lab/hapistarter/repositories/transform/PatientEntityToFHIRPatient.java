@@ -1,4 +1,4 @@
-package com.heathcare.lab.hapistarter.dao.transform;
+package com.heathcare.lab.hapistarter.repositories.transform;
 
 import com.heathcare.lab.hapistarter.entity.*;
 import org.apache.commons.collections4.Transformer;

@@ -1,33 +1,36 @@
 package com.heathcare.lab.hapistarter.providers;
 
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.annotation.*;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
-import com.heathcare.lab.hapistarter.dao.IPatient;
+import com.heathcare.lab.hapistarter.entity.PatientEntity;
+import com.heathcare.lab.hapistarter.repositories.transform.FHIRPatientToPatientEntity;
+import com.heathcare.lab.hapistarter.repositories.transform.PatientEntityToFHIRPatient;
+import com.heathcare.lab.hapistarter.repositories.PatientRepository;
 import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.OperationOutcome;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class PatientResourceProvider implements IResourceProvider {
 
   @Autowired
-  private FhirContext ctx;
+  private PatientRepository patientRepository;
 
   @Autowired
-  private IPatient patientDao;
+  private PatientEntityToFHIRPatient patientEntityToFHIRPatient;
+
+  @Autowired
+  private FHIRPatientToPatientEntity fhirPatientToPatientEntity;
 
   private static final Logger log = LoggerFactory.getLogger(PatientResourceProvider.class);
 
@@ -37,51 +40,46 @@ public class PatientResourceProvider implements IResourceProvider {
   }
 
   @Create()
-  public MethodOutcome createPatient(HttpServletRequest theRequest, @ResourceParam Patient patient) {
-    log.debug("Create Patient Provider called");
-
-    MethodOutcome method = new MethodOutcome();
-    method.setCreated(true);
-    OperationOutcome opOutcome = new OperationOutcome();
-
-    method.setOperationOutcome(opOutcome);
-
-    try {
-      Patient myPatient = patientDao.create(ctx, patient);
-      log.info(myPatient.getIdElement().toString());
-      method.setId(myPatient.getIdElement());
-      method.setResource(myPatient);
-    } catch (Exception ex) {
-      log.error(ex.getMessage());
-    }
-
-    log.debug("called create Patient method");
-
-    return method;
+  public MethodOutcome createPatient(@ResourceParam Patient patient) {
+      PatientEntity patientEntity = fhirPatientToPatientEntity.transform(patient);
+      var result = patientRepository.save(patientEntity);
+      return new MethodOutcome(new IdType(patientEntity.getId()), true);
   }
 
 
   @Read
-  public Patient readPatient(HttpServletRequest request, @IdParam IdType internalId) {
-    Patient patient = patientDao.read(ctx, internalId);
-    return patient;
+  public Patient getPatientById(@IdParam IdType internalId) {
+      Long id = Long.valueOf(internalId.getIdPart());
+      PatientEntity patientEntity = new PatientEntity();
+      Optional<PatientEntity> optional = patientRepository.findById(id);
+        if (optional.isPresent()) {
+            patientEntity = optional.get();
+        }
+      return patientEntityToFHIRPatient.transform(patientEntity);
   }
 
   @Search
-  public List<Resource> searchByDob(HttpServletRequest request, @OptionalParam(name= Patient.SP_BIRTHDATE) DateParam birthDate) {
-    List<Resource> results = patientDao.searchByDob(ctx,birthDate);
-    return results;
+  public List<Patient> searchByDob(@RequiredParam(name= Patient.SP_BIRTHDATE) DateParam birthDate) {
+      return patientRepository.findByDateOfBirth(birthDate.getValue())
+                              .stream()
+                              .map(item -> patientEntityToFHIRPatient.transform(item))
+                              .collect(Collectors.toList());
+  }
+
+
+  @Search
+  public List<Resource> searchByFamilyName(@RequiredParam(name = Patient.SP_FAMILY) StringParam familyName) {
+      return patientRepository.findByFamilyName(familyName.getValue())
+                              .stream()
+                              .map(item -> patientEntityToFHIRPatient.transform(item))
+                              .collect(Collectors.toList());
   }
 
   @Search
-  public List<Resource> searchByFamilyName(HttpServletRequest request, @RequiredParam(name = Patient.SP_FAMILY) StringParam familyName) {
-    List<Resource> results = patientDao.searchByFamilyName(ctx, familyName.getValue());
-    return results;
-  }
-
-  @Search
-  public List<Resource> searchByGivenName(HttpServletRequest request, @RequiredParam(name = Patient.SP_GIVEN) StringParam givenName) {
-    List<Resource> results = patientDao.searchByGivenName(ctx, givenName.getValue());
-    return results;
+  public List<Resource> searchByGivenName(@RequiredParam(name = Patient.SP_GIVEN) StringParam givenName) {
+    return patientRepository.findByGivenName(givenName.getValue())
+                            .stream()
+                            .map(item -> patientEntityToFHIRPatient.transform(item))
+                            .collect(Collectors.toList());
   }
 }

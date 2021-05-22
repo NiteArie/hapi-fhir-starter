@@ -15,17 +15,9 @@ import org.springframework.context.annotation.Bean;
 @EntityScan(basePackageClasses = PatientEntity.class)
 @ServletComponentScan
 public class HapiStarterApplication {
+
   public static void main(String[] args) {
     SpringApplication.run(HapiStarterApplication.class, args);
   }
 
-  @Autowired
-  private ApplicationContext applicationContext;
-
-  @Bean
-  public ServletRegistrationBean ServletRegistrationBean() {
-    ServletRegistrationBean registration= new ServletRegistrationBean(new FHIRRestfulServer(applicationContext),"/r4-postgres/*");
-    registration.setName("FhirServlet");
-    return registration;
-  }
 }

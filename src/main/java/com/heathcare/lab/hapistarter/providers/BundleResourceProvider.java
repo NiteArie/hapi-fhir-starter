@@ -1,11 +1,12 @@
 package com.heathcare.lab.hapistarter.providers;
 
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.IResourceProvider;
-import com.heathcare.lab.hapistarter.dao.PatientDao;
+import com.heathcare.lab.hapistarter.entity.PatientEntity;
+import com.heathcare.lab.hapistarter.repositories.transform.FHIRPatientToPatientEntity;
+import com.heathcare.lab.hapistarter.repositories.PatientRepository;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.OperationOutcome;
@@ -19,10 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 public class BundleResourceProvider implements IResourceProvider {
 
     @Autowired
-    private PatientDao patientDao;
+    private PatientRepository patientRepository;
 
     @Autowired
-    private FhirContext ctx;
+    private FHIRPatientToPatientEntity fhirPatientToPatientEntity;
 
     @Override
     public Class<? extends IBaseResource> getResourceType() {
@@ -36,20 +37,18 @@ public class BundleResourceProvider implements IResourceProvider {
         method.setCreated(true);
         OperationOutcome opOutcome = new OperationOutcome();
 
-        method.setOperationOutcome(opOutcome);
-
         for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
             if (entry.getResource() instanceof Patient) {
                 try {
-                    Patient myPatient = patientDao.create(ctx,(Patient) entry.getResource());
-                    method.setId(myPatient.getIdElement());
-                    method.setResource(myPatient);
+                    PatientEntity myPatient = patientRepository.save(fhirPatientToPatientEntity
+                                            .transform((Patient) entry.getResource()));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         }
 
+        method.setOperationOutcome(opOutcome);
         return method;
     }
 }

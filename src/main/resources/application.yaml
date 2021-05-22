@@ -12,8 +12,8 @@ spring:
     hikari:
       connectionTimeout: 20000
       maximumPoolSize: 5
-    password: example
-    url: jdbc:postgresql://0.0.0.0:5432/postgres
+    password: postgres
+    url: jdbc:postgresql://0.0.0.0:5433/hapi-persist-db
     username: postgres
   devtools:
     add-properties: true
