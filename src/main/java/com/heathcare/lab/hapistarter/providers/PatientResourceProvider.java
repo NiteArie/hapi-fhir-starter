@@ -5,11 +5,10 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.param.DateParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
-import com.heathcare.lab.hapistarter.entity.PatientEntity;
-import com.heathcare.lab.hapistarter.repositories.transform.FHIRPatientToPatientEntity;
-import com.heathcare.lab.hapistarter.repositories.transform.PatientEntityToFHIRPatient;
+import com.heathcare.lab.hapistarter.domain.entities.PatientEntity;
+import com.heathcare.lab.hapistarter.domain.transform.FHIRPatientToPatientEntity;
+import com.heathcare.lab.hapistarter.domain.transform.PatientEntityToFHIRPatient;
 import com.heathcare.lab.hapistarter.repositories.PatientRepository;
-import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +34,8 @@ public class PatientResourceProvider implements IResourceProvider {
   private static final Logger log = LoggerFactory.getLogger(PatientResourceProvider.class);
 
   @Override
-  public Class<? extends IBaseResource> getResourceType() {
-    return Patient.class;
+  public Class<Patient> getResourceType() {
+      return Patient.class;
   }
 
   @Create()

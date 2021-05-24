@@ -1,6 +1,6 @@
-package com.heathcare.lab.hapistarter.repositories.transform;
+package com.heathcare.lab.hapistarter.domain.transform;
 
-import com.heathcare.lab.hapistarter.entity.*;
+import com.heathcare.lab.hapistarter.domain.entities.*;
 import org.apache.commons.collections4.Transformer;
 import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.HumanName;

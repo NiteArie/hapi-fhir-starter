@@ -4,10 +4,9 @@ import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.server.IResourceProvider;
-import com.heathcare.lab.hapistarter.entity.PatientEntity;
-import com.heathcare.lab.hapistarter.repositories.transform.FHIRPatientToPatientEntity;
+import com.heathcare.lab.hapistarter.domain.entities.PatientEntity;
+import com.heathcare.lab.hapistarter.domain.transform.FHIRPatientToPatientEntity;
 import com.heathcare.lab.hapistarter.repositories.PatientRepository;
-import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.Patient;
@@ -26,7 +25,7 @@ public class BundleResourceProvider implements IResourceProvider {
     private FHIRPatientToPatientEntity fhirPatientToPatientEntity;
 
     @Override
-    public Class<? extends IBaseResource> getResourceType() {
+    public Class<Bundle> getResourceType() {
         return Bundle.class;
     }
 

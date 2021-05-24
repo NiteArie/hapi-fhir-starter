@@ -1,10 +1,9 @@
-package com.heathcare.lab.hapistarter.entity;
+package com.heathcare.lab.hapistarter.domain.entities;
 
 import lombok.*;
 import org.hl7.fhir.r4.model.Enumerations;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;

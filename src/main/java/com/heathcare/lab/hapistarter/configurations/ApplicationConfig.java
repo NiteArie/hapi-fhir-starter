@@ -5,10 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DaoConfig {
+public class ApplicationConfig {
 
-    @Bean
-    public FhirContext fhirContext() {
-        return FhirContext.forR4();
-    }
 }

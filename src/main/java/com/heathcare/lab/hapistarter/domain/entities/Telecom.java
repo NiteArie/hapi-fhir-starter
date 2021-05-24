@@ -1,27 +1,27 @@
-package com.heathcare.lab.hapistarter.entity;
+package com.heathcare.lab.hapistarter.domain.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
+import org.hl7.fhir.r4.model.ContactPoint.ContactPointUse;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "address")
-@Getter @Setter
+@Table(name = "telecom")
+@Setter @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Address {
+public class Telecom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String city;
-    private String country;
-    private String state;
-    private String line;
-    private String postalCode;
+    private String value;
+    private ContactPointSystem system;
+    private ContactPointUse use;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private PatientEntity patientEntity;

@@ -1,6 +1,6 @@
 package com.heathcare.lab.hapistarter.repositories;
 
-import com.heathcare.lab.hapistarter.entity.PatientEntity;
+import com.heathcare.lab.hapistarter.domain.entities.PatientEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

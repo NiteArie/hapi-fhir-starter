@@ -1,8 +1,8 @@
-package com.heathcare.lab.hapistarter.repositories.transform;
+package com.heathcare.lab.hapistarter.domain.transform;
 
-import com.heathcare.lab.hapistarter.entity.Name;
-import com.heathcare.lab.hapistarter.entity.PatientEntity;
-import com.heathcare.lab.hapistarter.entity.Telecom;
+import com.heathcare.lab.hapistarter.domain.entities.Name;
+import com.heathcare.lab.hapistarter.domain.entities.PatientEntity;
+import com.heathcare.lab.hapistarter.domain.entities.Telecom;
 import org.apache.commons.collections4.Transformer;
 import org.hl7.fhir.r4.model.*;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ public class FHIRPatientToPatientEntity implements Transformer<Patient, PatientE
         final PatientEntity patientEntity = new PatientEntity();
 
         for (Identifier identifier : patient.getIdentifier()) {
-            com.heathcare.lab.hapistarter.entity.Identifier identifierE = new com.heathcare.lab.hapistarter.entity.Identifier();
+            com.heathcare.lab.hapistarter.domain.entities.Identifier identifierE = new com.heathcare.lab.hapistarter.domain.entities.Identifier();
             identifierE.setSystem(identifier.getSystem());
             identifierE.setValue(identifier.getValue().replaceAll(" ",""));
 
@@ -54,7 +54,7 @@ public class FHIRPatientToPatientEntity implements Transformer<Patient, PatientE
             patientEntity.addToTelecom(telecom);
         }
         for (Address address : patient.getAddress()) {
-            com.heathcare.lab.hapistarter.entity.Address addressEntity = new com.heathcare.lab.hapistarter.entity.Address();
+            com.heathcare.lab.hapistarter.domain.entities.Address addressEntity = new com.heathcare.lab.hapistarter.domain.entities.Address();
 
             addressEntity.setLine(address.getLine().toString());
 

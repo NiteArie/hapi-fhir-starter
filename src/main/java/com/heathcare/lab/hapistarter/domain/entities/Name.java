@@ -1,4 +1,4 @@
-package com.heathcare.lab.hapistarter.entity;
+package com.heathcare.lab.hapistarter.domain.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
