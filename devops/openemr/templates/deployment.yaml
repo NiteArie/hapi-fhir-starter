@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "openemr.fullname" . }}
+  labels:
+    {{- include "openemr.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "openemr.selectorLabels" . | nindent 6 }}
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "openemr.selectorLabels" . | nindent 8 }}
+        tier: frontend
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        env: 
+        - name: MYSQL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-host
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-db
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-user
+        - name: MYSQL_PASS
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-password
+        - name: MYSQL_ROOT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: mysql-root-password
+        - name: OE_USER
+          valueFrom:
+            secretKeyRef: 
+              name: mysql-secret
+              key: openemr-user
+        - name: OE_PASS
+          valueFrom:
+            secretKeyRef: 
+              name: mysql-secret
+              key: openemr-pass
+        volumeMounts:
+        - name: logvolume01
+          mountPath: /var/log
+        - name: websitevolume
+          mountPath: /var/www/localhost/htdocs/openemr/sites
+        - name: sslvolume
+          mountPath: /etc/ssl
+        - name: letsencryptvolume
+          mountPath: /etc/letsencrypt       
+      volumes:
+      - name: logvolume01
+        persistentVolumeClaim:
+          claimName: logvolume01
+      - name: websitevolume
+        persistentVolumeClaim:
+          claimName: websitevolume
+      - name: sslvolume
+        persistentVolumeClaim:
+          claimName: sslvolume
+      - name: letsencryptvolume
+        persistentVolumeClaim:
+          claimName: letsencryptvolume
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openemr
+  labels:
+    {{- include "openemr.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 31888 
+  selector:
+    {{- include "openemr.selectorLabels" . | nindent 4 }}
+    tier: frontend

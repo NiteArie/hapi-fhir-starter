@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  creationTimestamp: null
+  labels:
+    name: openemr
+  name: letsencryptvolume
+spec:
+  storageClassName: letsencryptvolume
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: letsencryptvolume
+  labels:
+    name: openemr
+spec:
+  storageClassName: letsencryptvolume
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/letsencryptvolume"
