@@ -1,8 +1,6 @@
 package com.heathcare.lab.hapistarter.servlet;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.jpa.api.dao.IFhirResourceDao;
-import ca.uhn.fhir.jpa.api.dao.IFhirSystemDao;
 import ca.uhn.fhir.rest.api.EncodingEnum;
 import ca.uhn.fhir.rest.api.PreferReturnEnum;
 import ca.uhn.fhir.rest.openapi.OpenApiInterceptor;
@@ -17,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.cors.CorsConfiguration;
 
-import java.io.Serial;
 import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,8 +25,6 @@ public class HapiFHIRR4 extends RestfulServer {
   @Autowired
   AutowireCapableBeanFactory beanFactory;
 
-  @Serial
-  private static final long serialVersionUID = 1L;
 
   @Override
   protected void initialize() throws ServletException {

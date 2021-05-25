@@ -1,5 +1,6 @@
 package com.heathcare.lab.hapistarter;
 
+import com.heathcare.lab.hapistarter.domain.entities.PatientEntity;
 import com.heathcare.lab.hapistarter.configurations.ApplicationConfig;
 import com.heathcare.lab.hapistarter.entity.PatientEntity;
 import org.apache.http.HttpEntity;
@@ -32,9 +33,11 @@ import java.util.List;
 @EntityScan(basePackageClasses = PatientEntity.class)
 @ServletComponentScan
 public class HapiStarterApplication {
+
   public static void main(String[] args) {
     SpringApplication.run(HapiStarterApplication.class, args);
   }
+
 
   @Autowired
   private ApplicationContext applicationContext;
