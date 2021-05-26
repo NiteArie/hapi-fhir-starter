@@ -12,9 +12,15 @@
 	<groupId>com.heathcare.lab</groupId>
 	<artifactId>hapi-starter</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 	<name>hapi-starter</name>
 	<description>Demo project for Spring Boot</description>
+
+	<modules>
+		<module>hapi-fhir-open-emr</module>
+		<module>hapi-fhir-postgres</module>
+	</modules>
+
 	<properties>
 		<java.version>16</java.version>
 		<hapi.version>5.5.0-PRE1-SNAPSHOT</hapi.version>
