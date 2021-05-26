@@ -22,7 +22,7 @@
 	</modules>
 
 	<properties>
-		<java.version>16</java.version>
+		<java.version>11</java.version>
 		<hapi.version>5.5.0-PRE1-SNAPSHOT</hapi.version>
 		<httpClient.version>4.5.13</httpClient.version>
 		<json-simple.version>1.1.1</json-simple.version>
@@ -100,14 +100,17 @@
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-data-jpa</artifactId>
+				<version>2.4.5</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-jersey</artifactId>
+				<version>2.4.5</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-web</artifactId>
+				<version>2.4.5</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.springframework.boot</groupId>
@@ -118,27 +121,32 @@
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-devtools</artifactId>
+				<version>2.4.5</version>
 				<scope>runtime</scope>
 				<optional>true</optional>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-configuration-processor</artifactId>
+				<version>2.4.5</version>
 				<optional>true</optional>
 			</dependency>
 			<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
+				<version>1.18.20</version>
 				<optional>true</optional>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-test</artifactId>
+				<version>2.4.5</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
+				<version>42.2.19</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
@@ -154,20 +162,27 @@
 	</dependencyManagement>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<configuration>
+						<excludes>
+							<exclude>
+								<groupId>org.projectlombok</groupId>
+								<artifactId>lombok</artifactId>
+							</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>com.google.cloud.tools</groupId>
+					<artifactId>jib-maven-plugin</artifactId>
+					<version>3.0.0</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 </project>
