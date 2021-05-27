@@ -1,4 +1,4 @@
-package com.heathcare.lab.hapistarter;
+package com.healthcare.lab.hapistarter;
 
 import org.mitre.synthea.engine.Generator;
 import org.mitre.synthea.export.Exporter;

@@ -1,4 +1,4 @@
-package com.heathcare.lab.hapistarter;
+package com.healthcare.lab.hapistarter;
 
 import lombok.Data;
 import org.apache.http.HttpEntity;
