@@ -126,14 +126,7 @@
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
                 <configuration>
-                    <to>registry.hub.docker.com/minhducitus/custom-image</to>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <release>11</release>  <!--or <release>10</release>-->
+                    <to>registry.hub.docker.com/thedemoland/hapi-fhir-postgres</to>
                 </configuration>
             </plugin>
         </plugins>

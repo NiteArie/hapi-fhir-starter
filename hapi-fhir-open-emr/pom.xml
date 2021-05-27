@@ -134,7 +134,7 @@
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
                 <configuration>
-                    <to>registry.hub.docker.com/minhducitus/custom-image-1</to>
+                    <to>registry.hub.docker.com/thedemoland/hapi-fhir-open-emr</to>
                 </configuration>
             </plugin>
         </plugins>
