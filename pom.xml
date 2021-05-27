@@ -13,7 +13,8 @@
 	<modules>
 		<module>hapi-fhir-open-emr</module>
 		<module>hapi-fhir-postgres</module>
-	</modules>
+        <module>hapi-fhir-open-emr-generate</module>
+    </modules>
 
 	<properties>
 		<java.version>11</java.version>
