@@ -5,7 +5,7 @@
 
     <parent>
         <artifactId>hapi-starter</artifactId>
-        <groupId>com.heathcare.lab</groupId>
+        <groupId>com.healthcare.lab</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
