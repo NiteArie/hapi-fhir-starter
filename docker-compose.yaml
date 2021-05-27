@@ -1,11 +1,17 @@
 version: '3.3'
 services:
-#  web:
-#    container_name: web
-#    build: .
-#    ports:
-#      - '8080:8080'
-#    restart: always
+  hapi-fhir-openemr:
+    image: thedemoland/hapi-fhir-postgres
+    container_name: fhir-openemr
+    ports:
+    - '8081:8080'
+    restart: always
+  hapi-fhir-postgres:
+    image: thedemoland/hapi-fhir-postgres
+    container_name: fhir-postgres
+    ports:
+      - '8080:8080'
+    restart: always
   db:
     container_name: db
     image: postgres
