@@ -12,7 +12,7 @@ spring:
       connectionTimeout: 20000
       maximumPoolSize: 5
     password: postgres
-    url: jdbc:postgresql://localhost:5432/hapi-persist-db
+    url: jdbc:postgresql://db:5432/hapi-persist-db
     username: postgres
   devtools:
     add-properties: true
@@ -26,7 +26,7 @@ spring:
     table: flyway_schema_history
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
