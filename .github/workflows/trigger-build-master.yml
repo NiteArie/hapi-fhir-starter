@@ -34,3 +34,7 @@ jobs:
           distribution: 'zulu'
           java-version: '17-ea'
       - run: ./mvnw clean install
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
