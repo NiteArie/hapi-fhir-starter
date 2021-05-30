@@ -12,6 +12,11 @@ services:
     ports:
       - '8080:8080'
     restart: always
+  tools-gen-postgres:
+    image: thedemoland/tools-gen-postgres
+    restart: on-failure
+    depends_on:
+      - hapi-fhir-postgres
   db:
     container_name: db
     image: postgres
