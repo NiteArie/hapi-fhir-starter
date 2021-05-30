@@ -4,6 +4,9 @@ WORKDIR /application
 
 ARG BUILD_MODULE=hapi-fhir-open-emr
 
+COPY . .
+RUN ./mvnw compile install -DskipTests=true
+
 COPY ${BUILD_MODULE}/target/app.jar /application/app.jar
 RUN java -Djarmode=layertools -jar /application/app.jar extract
 
