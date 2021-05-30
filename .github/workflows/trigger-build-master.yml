@@ -22,6 +22,17 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '17-ea'
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
         
@@ -33,12 +44,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: kmshealthcare/hapi-fhir-open-emr:latest
+      - name: Build with Maven Jib
+        run: ./mvnw clean complie jib:build -DskipTests=true
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2

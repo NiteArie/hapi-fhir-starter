@@ -135,7 +135,19 @@
                     <addResources>true</addResources>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <configuration>
+                    <to>
+                        <image>kmshealthcare/${project.artifactId}:${project.version}</image>
+                    </to>
+                    <to>
+                        <image>kmshealthcare/${project.artifactId}:latest</image>
+                    </to>
+                </configuration>
+            </plugin>
         </plugins>
-        <finalName>app</finalName>
+
     </build>
 </project>
