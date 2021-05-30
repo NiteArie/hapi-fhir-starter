@@ -44,7 +44,13 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-  
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: kmshealthcare/hapi-fhir-open-emr:latest
+
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         env:
