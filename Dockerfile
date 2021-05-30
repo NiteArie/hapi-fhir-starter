@@ -1,13 +1,17 @@
+FROM openjdk:17-ea-jdk as build_maven
+
+WORKDIR /application
+
+COPY . .
+RUN ./mvnw compile install -DskipTests=true
+
 FROM openjdk:17-ea-jdk as extract_layers
 
 WORKDIR /application
 
 ARG BUILD_MODULE=hapi-fhir-open-emr
 
-COPY . .
-RUN ./mvnw compile install -DskipTests=true
-
-COPY ${BUILD_MODULE}/target/app.jar /application/app.jar
+COPY --from=build_maven /application/${BUILD_MODULE}/target/app.jar .
 RUN java -Djarmode=layertools -jar /application/app.jar extract
 
 FROM openjdk:17-slim-buster
