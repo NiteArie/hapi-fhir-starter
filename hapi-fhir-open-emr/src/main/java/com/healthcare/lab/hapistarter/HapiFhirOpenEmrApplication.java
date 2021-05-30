@@ -1,6 +1,10 @@
 package com.healthcare.lab.hapistarter;
 
 import com.healthcare.lab.hapistarter.configurations.ApplicationConfig;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -21,66 +25,65 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 @SpringBootApplication
 @ServletComponentScan
+@Log4j2
 public class HapiFhirOpenEmrApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(HapiFhirOpenEmrApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(HapiFhirOpenEmrApplication.class, args);
+  }
 
+  @Autowired
+  private ApplicationContext applicationContext;
 
-    @Autowired
-    private ApplicationContext applicationContext;
+  @Bean
+  CommandLineRunner initAccessToken() {
+    return args -> {
+      try {
+        ApplicationConfig config = applicationContext.getBean(
+          ApplicationConfig.class
+        );
 
-    @Bean
-    CommandLineRunner initAccessToken() {
-        return args -> {
-            try {
-                ApplicationConfig config = applicationContext.getBean(ApplicationConfig.class);
+        CloseableHttpClient client = HttpClients.createDefault();
 
-                CloseableHttpClient client = HttpClients.createDefault();
+        var httpPost = new HttpPost(config.getTokenUrl());
 
-                HttpPost httpPost = new HttpPost( config.getTokenUrl());
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
 
-                List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("client_id", config.getClientID()));
+        params.add(new BasicNameValuePair("grant_type", config.getGrantType()));
+        params.add(new BasicNameValuePair("user_role", config.getUserRole()));
+        params.add(new BasicNameValuePair("scope", config.getScope()));
+        params.add(new BasicNameValuePair("username", config.getUsername()));
+        params.add(new BasicNameValuePair("password", config.getPassword()));
 
-                params.add(new BasicNameValuePair("client_id", config.getClientID()));
-                params.add(new BasicNameValuePair("grant_type", config.getGrantType()));
-                params.add(new BasicNameValuePair("user_role", config.getUserRole()));
-                params.add(new BasicNameValuePair("scope", config.getScope()));
-                params.add(new BasicNameValuePair("username", config.getUsername()));
-                params.add(new BasicNameValuePair("password", config.getPassword()));
+        httpPost.setEntity(new UrlEncodedFormEntity(params));
 
-                httpPost.setEntity(new UrlEncodedFormEntity(params));
+        CloseableHttpResponse response = client.execute(httpPost);
 
-                CloseableHttpResponse response = client.execute(httpPost);
+        log.info(response.getStatusLine().getStatusCode());
 
-                System.out.println(response.getStatusLine().getStatusCode());
+        HttpEntity responseEntity = response.getEntity();
 
-                HttpEntity responseEntity = response.getEntity();
+        if (responseEntity != null) {
+          var bodyContent = EntityUtils.toString(responseEntity);
 
-                if (responseEntity != null) {
-                    String bodyContent = EntityUtils.toString(responseEntity);
-                    System.out.println(bodyContent);
+          log.info(bodyContent);
 
-                    JSONParser parser = new JSONParser();
-                    JSONObject json = (JSONObject) parser.parse(bodyContent);
+          var parser = new JSONParser();
+          JSONObject json = (JSONObject) parser.parse(bodyContent);
 
-                    config.setAccessToken(json.get("access_token").toString());
-                }
+          config.setAccessToken(json.get("access_token").toString());
+        }
 
-                client.close();
-
-            } catch (IOException error) {
-                error.printStackTrace();
-            } catch (ParseException error) {
-                error.printStackTrace();
-            }
-        };
-    }
+        client.close();
+      } catch (IOException error) {
+        error.printStackTrace();
+      } catch (ParseException error) {
+        error.printStackTrace();
+        log.error(error.getMessage());
+      }
+    };
+  }
 }
