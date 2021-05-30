@@ -1,16 +1,16 @@
-version: '3.3'
+version: "3.3"
 services:
   hapi-fhir-openemr:
     image: thedemoland/hapi-fhir-postgres
     container_name: fhir-openemr
     ports:
-    - '8081:8080'
+      - "8081:8080"
     restart: always
   hapi-fhir-postgres:
     image: thedemoland/hapi-fhir-postgres
     container_name: fhir-postgres
     ports:
-      - '8080:8080'
+      - "8080:8080"
     restart: always
   tools-gen-postgres:
     image: thedemoland/tools-gen-postgres
@@ -22,7 +22,7 @@ services:
     image: postgres
     restart: always
     ports:
-      - '5432:5432'
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USERNAME: postgres
@@ -35,11 +35,11 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@pg.com
       PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_SERVER_MODE: "False"
     volumes:
       - pgadmin:/var/lib/pgadmin
     ports:
-      - '80:80'
+      - "80:80"
     links:
       - "db:pgsql-server"
     restart: unless-stopped
