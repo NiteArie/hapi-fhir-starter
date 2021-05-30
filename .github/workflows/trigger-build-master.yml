@@ -45,7 +45,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build with Maven Jib
-        run: ./mvnw clean compile jib:build -DskipTests=true
+        run: ./mvnw package jib:build -DskipTests=true
 
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
