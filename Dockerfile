@@ -3,7 +3,8 @@ FROM openjdk:17-ea-jdk as build_maven
 WORKDIR /application
 
 COPY . .
-RUN ./mvnw compile install -DskipTests=true
+RUN ./mvnw compile package -DskipTests=true
+RUN ls -1 .
 
 FROM openjdk:17-ea-jdk as extract_layers
 
@@ -11,6 +12,7 @@ WORKDIR /application
 
 ARG BUILD_MODULE=hapi-fhir-open-emr
 
+RUN echo "Copy /application/${BUILD_MODULE}/target/app.jar"
 COPY --from=build_maven /application/${BUILD_MODULE}/target/app.jar /application/app.jar
 RUN ls -1 .
 RUN java -Djarmode=layertools -jar /application/app.jar extract
