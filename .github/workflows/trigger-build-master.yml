@@ -38,3 +38,5 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: 'green'
+          SLACK_MESSAGE: 'Build branch Master of "${{github.repository}}" completed!'
