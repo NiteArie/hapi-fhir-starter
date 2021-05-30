@@ -11,7 +11,8 @@ WORKDIR /application
 
 ARG BUILD_MODULE=hapi-fhir-open-emr
 
-COPY --from=build_maven /application/${BUILD_MODULE}/target/app.jar .
+COPY --from=build_maven /application/${BUILD_MODULE}/target/app.jar /application/app.jar
+RUN ls -1 .
 RUN java -Djarmode=layertools -jar /application/app.jar extract
 
 FROM openjdk:17-slim-buster
