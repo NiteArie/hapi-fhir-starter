@@ -1,1 +1,0 @@
-{"Modules":[{"Key":"install_github_actions","Source":"../modules/github-actions","Dir":"../modules/github-actions"},{"Key":"install_ngrok_operator","Source":"../modules/ngrok","Dir":"../modules/ngrok"},{"Key":"","Source":"","Dir":"."},{"Key":"install_cert_mananger","Source":"../modules/cert-manager","Dir":"../modules/cert-manager"}]}
