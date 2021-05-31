@@ -5,7 +5,7 @@ The following was discovered as part of building this project:
 
 Modules: 
 - **hapi-fhir-open-emr**: Demo HAPI FHIR integrate with OpenEMR (Patient, Appointment ). [Demo & Guideline](https://github.com/kms-healthcare/hapi-fhir-starter/wiki/HAPI-FHIR---OpenEMR)
-- **hapi-fhir-postgres**: Demo HAPI FHIR integrate with Self Managed Postgres
+- **hapi-fhir-postgres**: Demo HAPI FHIR integrate with Self Managed Postgres. [Demo & Guideline](https://github.com/kms-healthcare/hapi-fhir-starter/wiki/HAPI-FHIR-POSTGRES)
 - **tools-gen-openemr-data**: A tool with the aim of generating samples data for OpenEMR
 - **tools-gen-postgres**: A tool with the aim of generating samples data for Postgres
 - **devops**: Contains Helm Charts, Infrastructure As Code (Terraform)
