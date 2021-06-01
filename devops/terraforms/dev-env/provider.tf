@@ -16,8 +16,9 @@ terraform {
       version = "~> 4.0"
     }
 
-    kubernetes-alpha = {
-      version = "0.4.0"
+    kubectl = {
+      source = "gavinbunney/kubectl"
+      version = "1.11.1"
     }
 
   }
@@ -26,10 +27,6 @@ terraform {
 
 locals {
   kube_config_path = "~/.kube/config"
-}
-
-provider "kubernetes-alpha" {
-  config_path = local.kube_config_path
 }
 
 provider "kubernetes" {
