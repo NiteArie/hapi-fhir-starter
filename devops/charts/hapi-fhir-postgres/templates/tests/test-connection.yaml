@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "hapi-fhir-postgres.fullname" . }}-test-connection"
+  labels:
+    {{- include "hapi-fhir-postgres.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "hapi-fhir-postgres.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
