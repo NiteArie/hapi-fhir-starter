@@ -21,27 +21,22 @@ jobs:
           distribution: 'zulu'
           java-version: '11'
 
-      - name: Step 3 - Start container
-        id: docker-compose
-        run: docker-compose up -d
-
-      - name: Step 4 - Generate coverage
+      - name: Step 3 - Generate coverage
         id: coverage-generate
         run: mvn test
 
-      - name: Step 5 - Coverage check
+      - name: Step 4 - Coverage check
         id: coverage-check
         run: mvn verify
 
-      - name: Step 6 - Coverage upload
+      - name: Step 5 - Coverage upload
         id: coverage-upload
         uses: codecov/codecov-action@v1
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           file: ./**/target/site/jacoco/jacoco.xml
           name: codecov
 
-      - name: Step 7 - Slack
+      - name: Step 6 - Slack
         uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
