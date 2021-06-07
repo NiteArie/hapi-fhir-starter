@@ -29,14 +29,6 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
-          env:      
-          - name: SPRING_PROFILE
-            value: dev
-          - name: SPRING_APPLICATION_JSON
-            valueFrom:
-              configMapKeyRef:
-                name: spring-config
-                key: dev-config.json
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -76,4 +68,5 @@ spec:
       {{- end }}
       volumes:
       - name: hapi-data
-        emptyDir: {}
+        configMap:
+          name: spring-config

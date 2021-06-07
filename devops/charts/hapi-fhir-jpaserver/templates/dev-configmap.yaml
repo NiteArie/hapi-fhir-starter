@@ -3,10 +3,5 @@ kind: ConfigMap
 metadata:
   name: spring-config
 data:
-  dev-config.json: 
-    '{
-      "spring.datasource.url": "{{ .Values.spring.datasource.url }}",
-      "spring.datasource.username": "{{ .Values.spring.datasource.username }}",
-      "spring.datasource.password": "{{ .Values.spring.datasource.password }}",
-      "spring.datasource.driverClassName": "{{ .Values.spring.datasource.driverClassName }}"
-    }'
+  config.yaml: |
+{{ .Values.configFiles.db_config_file_yaml | toYaml | indent 4 }}
