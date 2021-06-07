@@ -77,7 +77,7 @@
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
                 <configuration>
-                    <to>registry.hub.docker.com/thedemoland/tools-gen-openemr</to>
+                    <to>registry.hub.docker.com/loner7/tools-gen-openemr</to>
                 </configuration>
             </plugin>
         </plugins>
